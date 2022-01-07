@@ -282,6 +282,34 @@ void GPGLLSentenceParser::parse(char* buffer, int term_offsets[],
   nmea_data->position.set(position);
 }
 
+void GNGLLSentenceParser::parse(char* buffer, int term_offsets[],
+                                int num_terms) {
+  bool ok = true;
+
+  Position position;
+
+  // eg3. $GNGLL,5133.81,N,00042.25,W*75
+  //       1    5133.81   Current latitude
+  ok &= parse_latlon(&position.latitude, buffer + term_offsets[1]);
+  //       2    N         North/South
+  ok &= parse_NS(&position.latitude, buffer + term_offsets[2]);
+  //       3    00042.25  Current longitude
+  ok &= parse_latlon(&position.longitude, buffer + term_offsets[3]);
+  //       4    W         East/West
+  ok &= parse_EW(&position.longitude, buffer + term_offsets[4]);
+
+  report_success(ok, sentence());
+  if (!ok) {
+    return;
+  }
+
+  position.altitude = -99999;
+
+  // notify relevant observers
+
+  nmea_data->position.set(position);
+}
+
 void GPRMCSentenceParser::parse(char* buffer, int term_offsets[],
                                 int num_terms) {
   bool ok = true;

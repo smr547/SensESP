@@ -75,6 +75,13 @@ class GPGLLSentenceParser : public SentenceParser {
  private:
 };
 
+class GNGLLSentenceParser : public SentenceParser {
+ public:
+  GNGLLSentenceParser(NMEAData* nmea_data) : SentenceParser{nmea_data} {}
+  void parse(char* buffer, int term_offsets[], int num_terms) override final;
+  const char* sentence() { return "GNGLL"; }
+};
+
 class GPRMCSentenceParser : public SentenceParser {
  public:
   GPRMCSentenceParser(NMEAData* nmea_data) : SentenceParser{nmea_data} {}
